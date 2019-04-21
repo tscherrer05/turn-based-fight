@@ -1,5 +1,4 @@
 using System;
-using System.Text.RegularExpressions;
 
 namespace Game.Model
 {
@@ -16,6 +15,16 @@ namespace Game.Model
 
         public Player(string name, int maxHealth, int strength, int dexterity, int endurance, int intelligence) : base(name, maxHealth, strength, dexterity, endurance, intelligence)
         {
+        }
+
+        public void AddMaxHealth(int points)
+        {
+            var minHealth = 10;
+            if (MaxHealth + points > minHealth)
+                MaxHealth += points;
+            else
+                throw new InvalidOperationException(
+                    $"Invalid modification of max health. {nameof(MaxHealth)} : {MaxHealth}, {nameof(points)} : {points}");
         }
     }
 }

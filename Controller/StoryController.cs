@@ -1,8 +1,5 @@
-using System;
-using System.Linq;
 using Game.Controller.Request;
-using Game.Model;
-using Game.Utils;
+
 
 namespace Game.Controller
 {
@@ -11,6 +8,8 @@ namespace Game.Controller
         public ResponseModel Intro(RequestModel requestModel)
         {
             var responseModel = new ResponseModel();
+
+            // TODO : Implement an introduction to story
 
             return responseModel;
         }

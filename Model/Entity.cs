@@ -10,13 +10,13 @@ namespace Game.Model
 {
     public abstract class Entity
     {
-        public string Name {get;} = "Unknown player";
-        public int MaxHealth {get;} = 100;
-        public int Health {get; private set;} = 100;
-        public int Strength {get;} = 0;
-        public int Dexterity {get;} = 0;
-        public int Endurance {get;} = 0;
-        public int Intelligence {get;} = 0;
+        public string Name { get; } = "Unknown entity";
+        public int MaxHealth { get; protected set; } = 100;
+        public int Health { get; protected set; } = 100;
+        public int Strength { get; set; } = 0;
+        public int Dexterity { get; set; } = 0;
+        public int Endurance { get; set; } = 0;
+        public int Intelligence { get; set; } = 0;
 
         public ReadOnlyCollection<IOffensive> Offensives {get;}
         private readonly List<IOffensive> _offensives;
@@ -24,14 +24,15 @@ namespace Game.Model
         private readonly List<Multiplier> _multipliers;
 
 
-        public Entity(string name, int maxHealth)
+        protected Entity(string name, int maxHealth)
         {
             if(NameIsValid(name) == false)
-                throw new ArgumentException($"{name} n'est pas un nom valide.");
+                throw new ArgumentException($"{name} isn't a valid name.");
 
-            this.Name = name;
-            this.Health = maxHealth;
-            this.MaxHealth = maxHealth;
+            Name = name;
+            Health = maxHealth;
+            MaxHealth = maxHealth;
+
             _multipliers = new List<Multiplier>();
             Multipliers = _multipliers.AsReadOnly();
 
@@ -39,12 +40,12 @@ namespace Game.Model
             Offensives = _offensives.AsReadOnly();
         }
 
-        public Entity(string name, int maxHealth, int strength) : this(name, maxHealth)
+        protected Entity(string name, int maxHealth, int strength) : this(name, maxHealth)
         {
-            this.Strength = strength;
+            Strength = strength;
         }
 
-        public Entity(string name, int maxHealth, int strength, int dexterity, int endurance, int intelligence) : this(name, maxHealth, strength)
+        protected Entity(string name, int maxHealth, int strength, int dexterity, int endurance, int intelligence) : this(name, maxHealth, strength)
         {
             Dexterity = dexterity;
             Endurance = endurance;
@@ -80,7 +81,7 @@ namespace Game.Model
         public static bool NameIsValid(string input)
         {
             var regexMatch = new Regex("([a-zA-Z]+\\s?)+");
-            return regexMatch.Matches(input).Count == 1;
+            return regexMatch.Matches(input).Count >= 1;
         }
 
         private int CalculateDamages(Entity target, IOffensive offensive)

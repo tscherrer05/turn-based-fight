@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Game.Controller.Request;
-using Game.Utils;
 
 namespace Game.Controller
 {
@@ -12,8 +11,8 @@ namespace Game.Controller
             {
                  Choices = new List<Choice>
                 {
-                    new Choice(1, "Histoire"),
-                    new Choice(2, "Combat aléatoire")
+                    new Choice(1, "Training fight"),
+                    new Choice(2, "Exit")
                 }
             };
 

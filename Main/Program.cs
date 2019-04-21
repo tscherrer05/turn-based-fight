@@ -11,7 +11,6 @@ namespace Game.Main
 {
     class Program
     {
-        private const string Name = "Autoplayer";
         private static Player Player;
         private static Dummy Dummy;
         private static Fight Fight;
@@ -20,21 +19,18 @@ namespace Game.Main
         {
             var menuChoice = MainMenu();
 
-            switch(menuChoice.Value)
+            switch (menuChoice.Value)
             {
                 case 1:
-                    Intro();
-                    break;
-                case 2:
+                    NameChoice();
+                    CharacsChoice();
                     StartFight();
                     break;
-                default:
-                    Console.WriteLine("Game over.");
+                case 2:
+                    Environment.Exit(0);
                     break;
             }
-
         }
-
 
         static Choice MainMenu()
         {
@@ -45,28 +41,6 @@ namespace Game.Main
             var userChoice = userInput.ReadChoice();
 
             return userChoice;
-        }
-
-        static void Intro()
-        {
-            Console.Write("Your name : ");
-            var name = string.Empty;
-            name = Console.ReadLine();
-            // Validate the input and display an error message if invalid
-            while (Entity.NameIsValid(name) == false)
-            {
-                Console.WriteLine("Only letters are allowed.");
-                Console.WriteLine("Your name : ");
-                name = Console.ReadLine();
-            }
-
-            Player = new Player(name, 100, 1, 1, 1, 10);
-            Player.AddMultiplier(new Multiplier(EffectType.Sharp, 100));
-            Dummy = new Dummy("Soldier", 100, 10);
-            var sword = new Weapon("Sword", 8, 11, EffectType.Sharp);
-            Dummy.Equip(sword);
-            var exca = new Weapon("Excalibur", 20, 25, EffectType.Fire);
-            Player.Equip(exca);
         }
 
         static string EntityStatus(Entity entity)
@@ -80,7 +54,7 @@ namespace Game.Main
         static string EntityCharacs(Entity entity)
         {
             var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine($"{entity.Name}");
+            stringBuilder.AppendLine($"{nameof(entity.MaxHealth)} : {entity.MaxHealth}");
             stringBuilder.AppendLine($"{nameof(entity.Intelligence)} : {entity.Intelligence}");
             stringBuilder.AppendLine($"{nameof(entity.Endurance)} : {entity.Endurance}");
             stringBuilder.AppendLine($"{nameof(entity.Strength)} : {entity.Strength}");
@@ -101,15 +75,76 @@ namespace Game.Main
             return userInput.ReadChoice();
         }
 
+        static void NameChoice()
+        {
+            Console.WriteLine("Choose your name :");
+            var name = string.Empty;
+            while(!Entity.NameIsValid(name))
+            {
+                name = Console.ReadLine();
+            }
+            Player = new Player(name, 100);
+        }
+
+        static void CharacsChoice()
+        {
+            Console.WriteLine("Choose your hero characteristics :");
+
+            var availablePoints = 30;
+
+            Console.WriteLine($"Available points : {availablePoints}");
+
+            while (availablePoints > 0)
+            {
+                // Max health
+                Console.WriteLine(EntityCharacs(Player));
+                Console.WriteLine("Max health (+2 by point) ?");
+                var input = int.Parse(Console.ReadLine());
+                availablePoints -= input;
+                Player.AddMaxHealth(input * 2);
+                Console.WriteLine($"Available points : {availablePoints}");
+
+
+                // Strength
+                Console.WriteLine(EntityCharacs(Player));
+                Console.WriteLine($"{nameof(Player.Strength)} ?");
+                input = int.Parse(Console.ReadLine());
+                availablePoints -= input;
+                Player.Strength += input;
+                Console.WriteLine($"Available points : {availablePoints}");
+
+
+                // Intelligence
+                Console.WriteLine(EntityCharacs(Player));
+                Console.WriteLine($"{nameof(Player.Intelligence)} ?");
+                input = int.Parse(Console.ReadLine());
+                availablePoints -= input;
+                Player.Intelligence += input;
+                Console.WriteLine($"Available points : {availablePoints}");
+
+
+                // Dexterity
+                Console.WriteLine(EntityCharacs(Player));
+                Console.WriteLine($"{nameof(Player.Dexterity)} ?");
+                input = int.Parse(Console.ReadLine());
+                availablePoints -= input;
+                Player.Dexterity += input;
+                Console.WriteLine($"Available points : {availablePoints}");
+
+
+                // Endurance
+                Console.WriteLine($"{nameof(Player.Endurance)} : {availablePoints}");
+                Player.Endurance += availablePoints;
+                availablePoints -= availablePoints;
+            }
+        }
+
         static void StartFight()
         {
-            Player = new Player(Name, 100, 1, 1, 1, 10);
-            Player.AddMultiplier(new Multiplier(EffectType.Sharp, 100));
-            Dummy = new Dummy("Soldat", 100, 10);
-            var sword = new Weapon("Epée", 8, 11, EffectType.Sharp);
-            Dummy.Equip(sword);
-            var exca = new Weapon("Excalibur", 20, 25, EffectType.Fire);
-            Player.Equip(exca);
+            Player.AddMultiplier(new Multiplier(EffectType.Blunt, 2));
+            Dummy = new Dummy("Dummy", 100, 0);
+            var sword = new Weapon("Wood sword", 8, 11, EffectType.Blunt);
+            Player.Equip(sword);
 
             Fight = new Fight(new List<Entity> {Player}, new List<Entity> {Dummy});
 
